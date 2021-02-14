@@ -148,6 +148,9 @@ class PostgresIdToUuidMigration extends AbstractMigration
         }
         $this->write('-> Adding UUIDs to tables with foreign keys...');
         foreach ($this->fks as $fk) {
+            if (null === $fk['pkColumns']) {
+                continue;
+            }
             $selectPk = implode(',', $fk['pkColumns']);
             $fetchs = $this->connection->fetchAll('SELECT ' . $selectPk . ', ' . $fk['key'] . ' FROM ' . $fk['table']);
             if (count($fetchs) > 0) {
